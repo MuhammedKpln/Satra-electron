@@ -27,11 +27,6 @@ const update = async () => {
     return false;
   }
 
-  new Notification({
-    title: "Laddar ner uppdateringen..",
-    body: "Vänligen vänta till uppdateringen laddas ner..",
-  }).show();
-
   autoUpdater.checkForUpdates().then(() => {
     autoUpdater
       .downloadUpdate()

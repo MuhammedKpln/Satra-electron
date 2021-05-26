@@ -1,6 +1,6 @@
 {
   "name": "satra-trafikskola",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Sätra Trafikskola prov client",
   "main": "./build/main.js",
   "scripts": {
