@@ -23,5 +23,12 @@
     "eslint": "^7.27.0",
     "typescript": "^4.3.2"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "build": {
+    "appId": "com.satratrafikskola.prov",
+    "extends": null,
+    "files": [
+      "dist/**/*"
+    ]
+  }
 }
