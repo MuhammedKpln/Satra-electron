@@ -1,4 +1,4 @@
-import { app, session, dialog } from "electron";
+import { app, session, Notification } from "electron";
 import { autoUpdater } from "electron-updater";
 
 const hardRestart = async () => {
@@ -19,8 +19,37 @@ const update = async () => {
   });
 
   if (!update) {
-    dialog.showErrorBox("Finns inga uppdatering", "");
+    new Notification({
+      title: "Finns inga uppdatering",
+      body: "Finns inga uppdatering som är tillgängligt.",
+    }).show();
+
+    return false;
   }
+
+  new Notification({
+    title: "Laddar ner uppdateringen..",
+    body: "Vänligen vänta till uppdateringen laddas ner..",
+  }).show();
+
+  autoUpdater
+    .downloadUpdate()
+    .then(() => {
+      new Notification({
+        title: "Uppdateringen laddats, installeras..",
+        body: "Uppdateringen laddats, installeras..",
+      }).show();
+
+      setTimeout(async () => {
+        await autoUpdater.quitAndInstall(false, true);
+      }, 3000);
+    })
+    .catch((err) => {
+      new Notification({
+        title: "Uppdateringen laddats, installeras..",
+        body: err.toString(),
+      }).show();
+    });
 };
 
 export const menuTemplate = [
