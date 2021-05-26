@@ -4,13 +4,16 @@
   "description": "Sätra Trafikskola prov client",
   "main": "./build/main.js",
   "scripts": {
-    "build": "electron-builder --win --publish never",
+    "build": "tsc",
     "watch": "tsc -w",
+    "build:mac": "electron-builder --mac --publish never",
+    "build:win": "electron-builder --win --publish never",
     "lint": "eslint -c .eslintrc --ext .ts ./src",
     "start": "tsc && electron ./build/main.js",
     "pack": "electron-builder --dir",
     "prod": "electron-builder --win --publish always",
-    "prestart": "copyfiles src/*.html build/"
+    "prestart": "copyfiles src/*.html build/",
+    "prebuild": "copyfiles src/*.html build/"
   },
   "repository": "https://github.com/MuhammedKpln/satra-electron",
   "author": "Muhammed Kaplan",
@@ -19,17 +22,24 @@
     "@typescript-eslint/parser": "^4.25.0",
     "copyfiles": "^2.4.1",
     "electron": "^13.0.1",
-    "electron-builder": "^22.10.5",
-    "electron-updater": "^4.3.9",
+    "electron-builder": "^22.11.4",
     "eslint": "^7.27.0",
     "typescript": "^4.3.2"
   },
-  "dependencies": {},
   "build": {
     "appId": "com.satratrafikskola.prov",
-    "extends": null,
     "files": [
       "./build/**/*"
-    ]
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icon.png"
+    },
+    "mac": {
+      "icon": "assets/icon.png"
+    }
+  },
+  "dependencies": {
+    "electron-updater": "^4.3.9"
   }
 }
