@@ -1,6 +1,8 @@
 import { app, session, Notification } from "electron";
 import { autoUpdater } from "electron-updater";
 
+autoUpdater.autoDownload = false;
+
 const hardRestart = async () => {
   await session.defaultSession.clearAuthCache();
   await session.defaultSession.clearStorageData();
@@ -13,39 +15,39 @@ const hardRestart = async () => {
 };
 
 const update = async () => {
-  const update = await autoUpdater.checkForUpdatesAndNotify({
+  await autoUpdater.checkForUpdatesAndNotify({
     title: "Uppdatering tillgänglig!",
     body: "Uppdatering tillgänglig för Sätra Trafikskola.",
   });
 
-  if (!update) {
+  autoUpdater.on("update-not-available", () => {
     new Notification({
       title: "Finns inga uppdatering",
       body: "Finns inga uppdatering som är tillgängligt.",
     }).show();
+  });
 
-    return false;
-  }
+  autoUpdater.on("update-available", () => {
+    autoUpdater.checkForUpdates().then(() => {
+      autoUpdater
+        .downloadUpdate()
+        .then(() => {
+          new Notification({
+            title: "Uppdateringen laddats, installeras..",
+            body: "Uppdateringen laddats, installeras..",
+          }).show();
 
-  autoUpdater.checkForUpdates().then(() => {
-    autoUpdater
-      .downloadUpdate()
-      .then(() => {
-        new Notification({
-          title: "Uppdateringen laddats, installeras..",
-          body: "Uppdateringen laddats, installeras..",
-        }).show();
-
-        setTimeout(async () => {
-          await autoUpdater.quitAndInstall(false, true);
-        }, 3000);
-      })
-      .catch((err) => {
-        new Notification({
-          title: "Uppdateringen laddats, installeras..",
-          body: err.toString(),
-        }).show();
-      });
+          setTimeout(async () => {
+            await autoUpdater.quitAndInstall(false, true);
+          }, 3000);
+        })
+        .catch((err) => {
+          new Notification({
+            title: "Uppdateringen laddats, installeras..",
+            body: err.toString(),
+          }).show();
+        });
+    });
   });
 };
 
