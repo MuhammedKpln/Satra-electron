@@ -1,0 +1,27 @@
+{
+  "name": "electron-quick-start-typescript",
+  "version": "1.0.0",
+  "description": "A minimal Electron application written with Typescript",
+  "scripts": {
+    "build": "electron-builder --win --publish never",
+    "watch": "tsc -w",
+    "lint": "eslint -c .eslintrc --ext .ts ./src",
+    "start": "tsc && electron ./dist/main.js",
+    "pack": "electron-builder --dir",
+    "prod": "electron-builder --win --publish always",
+    "prestart": "copyfiles src/*.html dist/"
+  },
+  "repository": "https://github.com/MuhammedKpln/satra-electron",
+  "author": "Muhammed Kaplan",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.25.0",
+    "@typescript-eslint/parser": "^4.25.0",
+    "copyfiles": "^2.4.1",
+    "electron": "^13.0.1",
+    "electron-builder": "^22.10.5",
+    "electron-updater": "^4.3.9",
+    "eslint": "^7.27.0",
+    "typescript": "^4.3.2"
+  },
+  "dependencies": {}
+}
