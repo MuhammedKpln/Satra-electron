@@ -32,24 +32,26 @@ const update = async () => {
     body: "Vänligen vänta till uppdateringen laddas ner..",
   }).show();
 
-  autoUpdater
-    .downloadUpdate()
-    .then(() => {
-      new Notification({
-        title: "Uppdateringen laddats, installeras..",
-        body: "Uppdateringen laddats, installeras..",
-      }).show();
+  autoUpdater.checkForUpdates().then(() => {
+    autoUpdater
+      .downloadUpdate()
+      .then(() => {
+        new Notification({
+          title: "Uppdateringen laddats, installeras..",
+          body: "Uppdateringen laddats, installeras..",
+        }).show();
 
-      setTimeout(async () => {
-        await autoUpdater.quitAndInstall(false, true);
-      }, 3000);
-    })
-    .catch((err) => {
-      new Notification({
-        title: "Uppdateringen laddats, installeras..",
-        body: err.toString(),
-      }).show();
-    });
+        setTimeout(async () => {
+          await autoUpdater.quitAndInstall(false, true);
+        }, 3000);
+      })
+      .catch((err) => {
+        new Notification({
+          title: "Uppdateringen laddats, installeras..",
+          body: err.toString(),
+        }).show();
+      });
+  });
 };
 
 export const menuTemplate = [
