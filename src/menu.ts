@@ -11,7 +11,10 @@ const hardRestart = async () => {
 };
 
 const update = async () => {
-  dialog.showErrorBox("selam", "as");
+  await autoUpdater.checkForUpdatesAndNotify({
+    title: "Uppdatering tillgänglig!",
+    body: "Uppdatering tillgänglig för Sätra Trafikskola.",
+  });
 };
 
 export const menuTemplate = [
@@ -24,11 +27,7 @@ export const menuTemplate = [
       },
       {
         label: "Uppdatera",
-        click: () => autoUpdater.checkForUpdatesAndNotify(),
-      },
-      {
-        label: "HelloWorld",
-        click: () => update(),
+        click: async () => await update(),
       },
     ],
   },
