@@ -1,4 +1,4 @@
-import { app, session, Notification } from "electron";
+import { app, session, Notification, dialog } from "electron";
 import { autoUpdater } from "electron-updater";
 
 autoUpdater.autoDownload = false;
@@ -51,6 +51,10 @@ const update = async () => {
   });
 };
 
+async function version() {
+  dialog.showErrorBox("Version", app.getVersion());
+}
+
 export const menuTemplate = [
   {
     label: "Inställningar",
@@ -62,6 +66,10 @@ export const menuTemplate = [
       {
         label: "Uppdatera",
         click: async () => await update(),
+      },
+      {
+        label: "Version",
+        click: async () => await version(),
       },
     ],
   },
