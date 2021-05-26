@@ -2,6 +2,7 @@
   "name": "satra-trafikskola",
   "version": "1.0.0",
   "description": "Sätra Trafikskola prov client",
+  "main": "./build/main.js",
   "scripts": {
     "build": "electron-builder --win --publish never",
     "watch": "tsc -w",
