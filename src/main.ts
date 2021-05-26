@@ -1,4 +1,5 @@
-import { app, BrowserWindow, screen } from "electron";
+import { app, BrowserWindow, screen, Menu } from "electron";
+import { menuTemplate } from "./menu";
 
 function createWindow() {
   // Create the browser window.
@@ -38,6 +39,9 @@ function createWindow() {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on("ready", () => {
+  const m = Menu.buildFromTemplate(menuTemplate);
+  Menu.setApplicationMenu(m);
+
   createWindow();
 
   app.on("activate", function () {

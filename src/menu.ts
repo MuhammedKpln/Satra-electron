@@ -1,4 +1,4 @@
-import { Menu, app, session, dialog } from "electron";
+import { app, session, dialog } from "electron";
 import { autoUpdater } from "electron-updater";
 
 const hardRestart = async () => {
@@ -14,7 +14,7 @@ const update = async () => {
   dialog.showErrorBox("selam", "as");
 };
 
-const template = [
+export const menuTemplate = [
   {
     label: "Inställningar",
     submenu: [
@@ -33,6 +33,3 @@ const template = [
     ],
   },
 ];
-
-const m = Menu.buildFromTemplate(template);
-Menu.setApplicationMenu(m);
