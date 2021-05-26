@@ -1,15 +1,15 @@
 {
-  "name": "electron-quick-start-typescript",
+  "name": "satra-trafikskola",
   "version": "1.0.0",
-  "description": "A minimal Electron application written with Typescript",
+  "description": "Sätra Trafikskola prov client",
   "scripts": {
     "build": "electron-builder --win --publish never",
     "watch": "tsc -w",
     "lint": "eslint -c .eslintrc --ext .ts ./src",
-    "start": "tsc && electron ./dist/main.js",
+    "start": "tsc && electron ./build/main.js",
     "pack": "electron-builder --dir",
     "prod": "electron-builder --win --publish always",
-    "prestart": "copyfiles src/*.html dist/"
+    "prestart": "copyfiles src/*.html build/"
   },
   "repository": "https://github.com/MuhammedKpln/satra-electron",
   "author": "Muhammed Kaplan",
@@ -28,7 +28,7 @@
     "appId": "com.satratrafikskola.prov",
     "extends": null,
     "files": [
-      "dist/**/*"
+      "./build/**/*"
     ]
   }
 }
