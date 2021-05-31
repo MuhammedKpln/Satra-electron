@@ -48,27 +48,6 @@
         </svg>
       </div>
     </div>
-    <div id="window-buttons">
-      <div class="minimise">
-        <img
-          src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/199011/windows-minimise.png"
-          alt=""
-        />
-      </div>
-      <div id="windowed" fullscreen="1">
-        <img
-          id="windowed-fullscreen-button-img"
-          src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/199011/windows-window.png"
-          alt=""
-        />
-      </div>
-      <div class="close">
-        <img
-          src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/199011/windows-close.png"
-          alt=""
-        />
-      </div>
-    </div>
   </div>
 </div>
 
@@ -93,8 +72,6 @@
     const backBtn = document.querySelector("#back-button");
     const forwardBtn = document.querySelector("#forward-button");
     const refreshBtn = document.querySelector("#refresh");
-    const closeBtn = document.querySelector(".close");
-    const minimiseBtn = document.querySelector(".minimise");
 
     backBtn.addEventListener("click", () => {
       if (webview.canGoBack()) {
@@ -110,14 +87,6 @@
       webview.loadURL("http://159.89.27.224").then(() => {
         webview.reloadIgnoringCache();
       });
-    });
-
-    minimiseBtn.addEventListener("click", () => {
-      window.api.send("minimizeWindow");
-    });
-
-    closeBtn.addEventListener("click", () => {
-      window.api.send("closeWindow");
     });
   };
 </script>

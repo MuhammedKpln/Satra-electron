@@ -16,8 +16,7 @@ function createWindow() {
       webviewTag: true,
       preload: __dirname + "/preload.js",
     },
-    frame: false,
-    titleBarStyle: "hiddenInset",
+    titleBarStyle: "hidden",
   });
 
   const splash = new BrowserWindow({
@@ -39,15 +38,6 @@ function createWindow() {
       mainWindow.show();
     }, 2000);
   });
-  ipcMain.on("closeWindow", () => {
-    app.exit();
-    app.quit();
-  });
-
-  ipcMain.on("minimizeWindow", () => {
-    mainWindow.minimize();
-  });
-
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
 }
