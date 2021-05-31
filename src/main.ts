@@ -1,6 +1,8 @@
-import { app, BrowserWindow, screen, Menu } from "electron";
+import { app, BrowserWindow, screen, Menu, ipcMain } from "electron";
 import { menuTemplate } from "./menu";
-
+try {
+  require("electron-reloader")(module);
+} catch (_) {}
 function createWindow() {
   // Create the browser window.
   const { width, height } = screen.getPrimaryDisplay().workAreaSize;
@@ -10,6 +12,12 @@ function createWindow() {
     height,
     show: false, // don't show the main window
     autoHideMenuBar: true,
+    webPreferences: {
+      webviewTag: true,
+      preload: __dirname + "/preload.js",
+    },
+    frame: false,
+    titleBarStyle: "hiddenInset",
   });
 
   const splash = new BrowserWindow({
@@ -19,8 +27,9 @@ function createWindow() {
     frame: false,
     alwaysOnTop: true,
   });
+
   splash.loadURL(`file://${__dirname}/src/loading.html`);
-  mainWindow.loadURL("http://159.89.27.224");
+  mainWindow.loadURL(`file://${__dirname}/src/index.html`);
 
   mainWindow.once("ready-to-show", () => {
     mainWindow.webContents.executeJavaScript(`window.localStorage.clear()`);
@@ -29,6 +38,14 @@ function createWindow() {
       splash.destroy();
       mainWindow.show();
     }, 2000);
+  });
+  ipcMain.on("closeWindow", () => {
+    app.exit();
+    app.quit();
+  });
+
+  ipcMain.on("minimizeWindow", () => {
+    mainWindow.minimize();
   });
 
   // Open the DevTools.
@@ -39,6 +56,7 @@ function createWindow() {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on("ready", () => {
+  //@ts-ignore
   const m = Menu.buildFromTemplate(menuTemplate);
   Menu.setApplicationMenu(m);
 

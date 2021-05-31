@@ -1,0 +1,713 @@
+<div id="chrome-bar" style="-webkit-app-region: drag">
+  <div id="main-bar">
+    <div
+      class="button"
+      id="back-button"
+      title="Click to go back, don't hold for history"
+      data-ripple
+    >
+      <svg viewBox="0 0 16 16">
+        <path d="M16,7H3.8l5.6-5.6L8,0L0,8l8,8l1.4-1.4L3.8,9H16V7z" />
+      </svg>
+    </div>
+
+    <div
+      class="button"
+      id="forward-button"
+      title="Click to go forward, don't hold for history"
+      disabled
+      data-ripple
+    >
+      <svg viewBox="0 0 16 16">
+        <path d="M8,0L6.6,1.4L12.2,7H0v2h12.2l-5.6,5.6L8,16l8-8L8,0z" />
+      </svg>
+    </div>
+    <div class="button" id="refresh" title="Reload page" data-ripple>
+      <svg viewBox="0 0 16 16">
+        <path
+          d="M13.6,2.3C12.2,0.9,10.2,0,8,0C3.6,0,0,3.6,0,8s3.6,8,8,8c3.7,0,6.8-2.5,7.7-6h-2.1c-0.8,2.3-3,4-5.6,4c-3.3,0-6-2.7-6-6
+ s2.7-6,6-6c1.7,0,3.1,0.7,4.2,1.8L9,7h7V0L13.6,2.3z"
+        />
+      </svg>
+    </div>
+    <div id="address-bar" class="-selected">
+      <div id="address">
+        <span class="extension">Sätra Trafikskola</span>
+      </div>
+      <div id="bookmark" class="address-bar-button" data-ripple>
+        <svg viewBox="0 0 16 16" class="not-favourite hide">
+          <path
+            d="M16,5.8l-5.8-0.5L8,0L5.8,5.3L0,5.8l4.4,3.8l-1.3,5.6l4.9-3l4.9,3l-1.3-5.6L16,5.8z M8,10.7l-3,1.8l0.8-3.4L3.1,6.8l3.5-0.3
+ L8,3.3l1.4,3.2l3.5,0.3l-2.7,2.3l0.8,3.4L8,10.7z"
+          />
+        </svg>
+        <svg viewBox="0 0 16 16" class="favourite">
+          <path
+            d="M8,12.2l4.9,3l-1.3-5.6L16,5.8l-5.8-0.5L8,0L5.8,5.3L0,5.8l4.4,3.8l-1.3,5.6L8,12.2z"
+          />
+        </svg>
+      </div>
+    </div>
+    <div id="window-buttons">
+      <div class="minimise">
+        <img
+          src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/199011/windows-minimise.png"
+          alt=""
+        />
+      </div>
+      <div id="windowed" fullscreen="1">
+        <img
+          id="windowed-fullscreen-button-img"
+          src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/199011/windows-window.png"
+          alt=""
+        />
+      </div>
+      <div class="close">
+        <img
+          src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/199011/windows-close.png"
+          alt=""
+        />
+      </div>
+    </div>
+  </div>
+</div>
+
+<webview id="foo" src="http://159.89.27.224"></webview>
+<div class="indicator"></div>
+<script>
+  onload = () => {
+    const webview = document.querySelector("webview");
+    const indicator = document.querySelector(".indicator");
+
+    const loadstart = () => {
+      indicator.innerText = "Laddar...";
+    };
+
+    const loadstop = () => {
+      indicator.innerText = "";
+    };
+
+    webview.addEventListener("did-start-loading", loadstart);
+    webview.addEventListener("did-stop-loading", loadstop);
+
+    const backBtn = document.querySelector("#back-button");
+    const forwardBtn = document.querySelector("#forward-button");
+    const refreshBtn = document.querySelector("#refresh");
+    const closeBtn = document.querySelector(".close");
+    const minimiseBtn = document.querySelector(".minimise");
+
+    backBtn.addEventListener("click", () => {
+      if (webview.canGoBack()) {
+        webview.goBack();
+      }
+    });
+    forwardBtn.addEventListener("click", () => {
+      if (webview.canGoForward()) {
+        webview.goForward();
+      }
+    });
+    refreshBtn.addEventListener("click", () => {
+      webview.loadURL("http://159.89.27.224").then(() => {
+        webview.reloadIgnoringCache();
+      });
+    });
+
+    minimiseBtn.addEventListener("click", () => {
+      window.api.send("minimizeWindow");
+    });
+
+    closeBtn.addEventListener("click", () => {
+      window.api.send("closeWindow");
+    });
+  };
+</script>
+
+<style>
+  /* $system-color-blue:#0063B1;
+ * $system-color-orange:#FF8C00;
+ * $system-color-purple:#B146C2;
+ * $system-color-green:#C30052;
+ * $system-color-yellow:#FFB900; */
+  /* To-do:
+ *  • Add ripple on new tab, menu, profile, navigation buttons
+ *       This ripple must be on the point, fade when you move off while holding down and the ripple has filled, then when moving back while still holding it re-ripples from the entry point - it's a nice effect.
+ *  × Make tabs responsive
+ *  × Whole main bar
+ */
+  body {
+    display: flex;
+    flex-direction: column;
+    background-color: #eeeeee;
+    margin: 0;
+    /**[data-ripple] {
+     position: relative;
+     >*:not(.container) {
+        &.held, &:active {
+           .ripple {
+              position: absolute;
+
+              background-color:#000;
+
+              transform:translate(-50%,-50%);
+
+              animation: grow .25s ease-out;
+              @keyframes grow {
+                 0% {
+                    width:0px;
+                    height:0px;
+                 }
+                 100% {
+                    width:64px;
+                    height:64px;
+                 }
+              }
+           }
+        }
+     }
+  }*/
+  }
+  body #chrome-bar {
+    position: relative;
+    top: 0px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    border-bottom: 1px solid #b6b4b6;
+    font-family: "Segoe UI", "Roboto", sans-serif;
+  }
+  body #chrome-bar.windowed {
+    top: -9px;
+  }
+  body #chrome-bar #tab-bar {
+    display: flex;
+    flex-direction: row;
+    height: 34px;
+    padding-left: 8px;
+    background-color: #dee1e6;
+  }
+  body #chrome-bar #tab-bar.windowed {
+    height: 43px;
+    padding-top: 9px;
+  }
+  body #chrome-bar #tab-bar #tabs {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+  body #chrome-bar #tab-bar #tabs .tab-frame {
+    flex-grow: 1;
+    max-width: 256px;
+    width: calc(calc(100% - 240px) / 3);
+    margin-right: -17px;
+  }
+  body #chrome-bar #tab-bar #tabs .tab-frame:before {
+    position: absolute;
+  }
+  body #chrome-bar #tab-bar #tabs .tab-frame .tab-container {
+    position: relative;
+    left: -8px;
+    overflow: hidden;
+  }
+  body #chrome-bar #tab-bar #tabs .tab-frame .tab-container .round {
+    z-index: 1;
+    position: absolute;
+    bottom: 0px;
+    width: 32px;
+    height: 32px;
+    border: 8px solid transparent;
+    border-radius: 100%;
+    transition: 0.25s;
+  }
+  body #chrome-bar #tab-bar #tabs .tab-frame .tab-container .round.round-left {
+    left: -16px;
+    bottom: -8px;
+    border-right-color: transparent;
+    transform: rotate(45deg);
+  }
+  body #chrome-bar #tab-bar #tabs .tab-frame .tab-container .round.round-right {
+    right: -16px;
+    bottom: -8px;
+    transform: rotate(-45deg);
+    border-left-color: transparent;
+  }
+  body #chrome-bar #tab-bar #tabs .tab-frame .tab-container .tab {
+    z-index: 2;
+    position: relative;
+    left: 8px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: calc(100% - 16px);
+    height: 34px;
+    padding: 0px 8px 0px 12px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    background-color: transparent;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    transition: 0.25s;
+  }
+  body #chrome-bar #tab-bar #tabs .tab-frame .tab-container .tab .icon {
+    width: 16px;
+    height: 16px;
+  }
+  body #chrome-bar #tab-bar #tabs .tab-frame .tab-container .tab .title {
+    position: relative;
+    top: -1px;
+    flex-grow: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    margin-left: 8px;
+    margin-right: 4px;
+    color: #5f6368;
+    font-size: 12px;
+    pointer-events: none;
+  }
+  body #chrome-bar #tab-bar #tabs .tab-frame .tab-container .tab .title:before {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+    box-shadow: inset -18px 0 18px -18px #dee1e6,
+      inset -18px 0 18px -18px #dee1e6, inset -18px 0 18px -18px #dee1e6;
+    content: "";
+    transition: 0.25s;
+  }
+  body #chrome-bar #tab-bar #tabs .tab-frame .tab-container .tab .close {
+    position: relative;
+    min-width: 16px;
+    height: 16px;
+    border-radius: 100%;
+  }
+  body #chrome-bar #tab-bar #tabs .tab-frame .tab-container .tab .close svg {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    pointer-events: none;
+  }
+  body
+    #chrome-bar
+    #tab-bar
+    #tabs
+    .tab-frame
+    .tab-container
+    .tab
+    .close
+    svg
+    path {
+    fill: #5f6368;
+  }
+  body #chrome-bar #tab-bar #tabs .tab-frame .tab-container .tab .close:hover {
+    background-color: #e8eaed;
+  }
+  body
+    #chrome-bar
+    #tab-bar
+    #tabs
+    .tab-frame
+    .tab-container
+    .tab
+    .close:hover
+    svg
+    path {
+    fill: #3b4042;
+  }
+  body #chrome-bar #tab-bar #tabs .tab-frame .tab-container .tab .close:active {
+    background-color: #dadce0;
+  }
+  body #chrome-bar #tab-bar #tabs .tab-frame .tab-container:after {
+    position: absolute;
+    top: 7px;
+    right: 8px;
+    transform: translateY(0.5px);
+    width: 1px;
+    height: 20px;
+    background-color: rgba(45, 48, 50, 0.3359375);
+    content: "";
+  }
+  body
+    #chrome-bar
+    #tab-bar
+    #tabs
+    .tab-frame
+    .tab-container:hover
+    .round.round-left {
+    border-right-color: #eeeff1;
+  }
+  body
+    #chrome-bar
+    #tab-bar
+    #tabs
+    .tab-frame
+    .tab-container:hover
+    .round.round-right {
+    border-left-color: #eeeff1;
+  }
+  body #chrome-bar #tab-bar #tabs .tab-frame .tab-container:hover .tab {
+    background-color: #eeeff1;
+  }
+  body #chrome-bar #tab-bar #tabs .tab-frame .tab-container:hover .tab .title {
+    color: #5f6368;
+  }
+  body
+    #chrome-bar
+    #tab-bar
+    #tabs
+    .tab-frame
+    .tab-container:hover
+    .tab
+    .title:before {
+    box-shadow: inset -18px 0 18px -18px #eeeff1,
+      inset -18px 0 18px -18px #eeeff1, inset -18px 0 18px -18px #eeeff1;
+  }
+  body #chrome-bar #tab-bar #tabs .tab-frame .tab-container.active {
+    z-index: 5;
+  }
+  body #chrome-bar #tab-bar #tabs .tab-frame .tab-container.active .round {
+    transition: 0s;
+  }
+  body
+    #chrome-bar
+    #tab-bar
+    #tabs
+    .tab-frame
+    .tab-container.active
+    .round.round-left {
+    border-right-color: #ffffff;
+  }
+  body
+    #chrome-bar
+    #tab-bar
+    #tabs
+    .tab-frame
+    .tab-container.active
+    .round.round-right {
+    border-left-color: #ffffff;
+  }
+  body #chrome-bar #tab-bar #tabs .tab-frame .tab-container.active .tab {
+    transition: 0s;
+    background-color: #ffffff;
+  }
+  body #chrome-bar #tab-bar #tabs .tab-frame .tab-container.active .tab .title {
+    color: #3c4043;
+  }
+  body
+    #chrome-bar
+    #tab-bar
+    #tabs
+    .tab-frame
+    .tab-container.active
+    .tab
+    .title:before {
+    transition: 0s;
+    box-shadow: inset -18px 0 18px -18px #ffffff,
+      inset -18px 0 18px -18px #ffffff, inset -18px 0 18px -18px #ffffff;
+  }
+  body #chrome-bar #tab-bar #tabs #new-tab {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 28px;
+    height: 28px;
+    margin-left: 9px;
+    border-radius: 100%;
+    transition: 0.25s;
+  }
+  body #chrome-bar #tab-bar #tabs #new-tab svg {
+    width: 12px;
+    height: 12px;
+  }
+  body #chrome-bar #tab-bar #tabs #new-tab svg path {
+    fill: #595c62;
+  }
+  body #chrome-bar #tab-bar #tabs #new-tab:hover {
+    background-color: #cbced3;
+  }
+  body #chrome-bar #tab-bar #tabs #new-tab:active {
+    background-color: #bfc1c6;
+  }
+  body #chrome-bar #tab-bar #gap {
+    width: 64px;
+  }
+  #window-buttons {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+  }
+  #window-buttons > div {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 29px;
+    margin-bottom: 5px;
+    cursor: pointer;
+  }
+  #window-buttons > div img {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    pointer-events: none;
+  }
+  #window-buttons > div,
+  #window-buttons > div * {
+    transition: 0.25s;
+  }
+  #window-buttons > div:not(.close):hover {
+    background-color: rgba(0, 0, 0, 0.09765625);
+  }
+  #window-buttons > div:not(.close):active {
+    background-color: rgba(0, 0, 0, 0.1953125);
+    transition: 0s;
+  }
+  #window-buttons > div.close:hover {
+    background-color: #e81123;
+  }
+  #window-buttons > div.close:hover img {
+    filter: invert(1);
+  }
+  #window-buttons > div.close:active {
+    background-color: #e36571;
+    transition: 0s;
+  }
+  body #chrome-bar #main-bar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 36px;
+    padding: 0 6px;
+    background-color: #ffffff;
+  }
+  body #chrome-bar #main-bar .button {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    margin: 0 2px;
+    border-radius: 100%;
+    transition: 0.25s;
+  }
+  body #chrome-bar #main-bar .button[disabled] svg path {
+    fill: #babcbe;
+  }
+  body #chrome-bar #main-bar .button:not([disabled]):hover {
+    background-color: #eeeeee;
+  }
+  body #chrome-bar #main-bar .button:not([disabled]):active {
+    transition: 0.05s;
+    background-color: #e2e2e2;
+  }
+  body #chrome-bar #main-bar .button:not([disabled]) svg path {
+    fill: #5f6368;
+  }
+  body #chrome-bar #main-bar .button svg {
+    width: 14px;
+    height: 14px;
+  }
+  body #chrome-bar #main-bar .button.extension {
+    position: relative;
+  }
+  body #chrome-bar #main-bar .button.extension img {
+    width: 16px;
+  }
+  body #chrome-bar #main-bar .button.extension[data-disabled] {
+    filter: grayscale(1) opacity(50%);
+  }
+  body #chrome-bar #main-bar .button.extension[data-notifications]:before {
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    height: 12px;
+    min-width: 12px;
+    border-radius: 2px;
+    box-shadow: 0 0 0 1px #ffffff;
+    background-color: #555555;
+    color: #ffffff;
+    font-size: 6px;
+    content: attr(data-notifications);
+  }
+  body #chrome-bar #main-bar #address-bar {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    overflow: hidden;
+    height: 28px;
+    margin: 0 8px 0 6px;
+    border-radius: 20px;
+    background-color: #f1f3f4;
+    white-space: pre;
+  }
+  body #chrome-bar #main-bar #address-bar.selected {
+    box-shadow: 0 0 0 1px #b3cefb, inset 0 0 0 1px #b3cefb;
+    background-color: #ffffff;
+  }
+  body #chrome-bar #main-bar #address-bar .address-bar-button {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 24px;
+    min-width: 32px;
+    padding: 0 10px;
+    margin: 0 2px;
+    border-radius: 20px;
+    font-size: 14px;
+    transition: background-color 0.25s;
+  }
+  body #chrome-bar #main-bar #address-bar .address-bar-button.show-special {
+    margin-right: 9px;
+  }
+  body #chrome-bar #main-bar #address-bar .address-bar-button svg path {
+    fill: #5f6368;
+  }
+  body
+    #chrome-bar
+    #main-bar
+    #address-bar
+    .address-bar-button
+    svg.favourite
+    path {
+    fill: #4285f4;
+  }
+  body #chrome-bar #main-bar #address-bar .address-bar-button svg.https,
+  body #chrome-bar #main-bar #address-bar .address-bar-button img.https,
+  body #chrome-bar #main-bar #address-bar .address-bar-button .special.https {
+    width: 12px;
+    height: 12px;
+  }
+  body #chrome-bar #main-bar #address-bar .address-bar-button svg.error,
+  body #chrome-bar #main-bar #address-bar .address-bar-button img.error,
+  body #chrome-bar #main-bar #address-bar .address-bar-button .special.error {
+    width: 14px;
+    height: 14px;
+  }
+  body #chrome-bar #main-bar #address-bar .address-bar-button svg.favicon,
+  body #chrome-bar #main-bar #address-bar .address-bar-button svg.not-favourite,
+  body #chrome-bar #main-bar #address-bar .address-bar-button svg.favourite,
+  body #chrome-bar #main-bar #address-bar .address-bar-button img.favicon,
+  body #chrome-bar #main-bar #address-bar .address-bar-button img.not-favourite,
+  body #chrome-bar #main-bar #address-bar .address-bar-button img.favourite,
+  body #chrome-bar #main-bar #address-bar .address-bar-button .special.favicon,
+  body
+    #chrome-bar
+    #main-bar
+    #address-bar
+    .address-bar-button
+    .special.not-favourite,
+  body
+    #chrome-bar
+    #main-bar
+    #address-bar
+    .address-bar-button
+    .special.favourite {
+    width: 16px;
+    height: 16px;
+  }
+  body #chrome-bar #main-bar #address-bar .address-bar-button svg.special,
+  body #chrome-bar #main-bar #address-bar .address-bar-button img.special,
+  body #chrome-bar #main-bar #address-bar .address-bar-button .special.special {
+    position: relative;
+    margin-left: 10px;
+    color: #5f6368;
+    white-space: pre;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+  body
+    #chrome-bar
+    #main-bar
+    #address-bar
+    .address-bar-button
+    svg.special:before,
+  body
+    #chrome-bar
+    #main-bar
+    #address-bar
+    .address-bar-button
+    img.special:before,
+  body
+    #chrome-bar
+    #main-bar
+    #address-bar
+    .address-bar-button
+    .special.special:before {
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    right: -10px;
+    width: 1px;
+    background-color: #9d9e9f;
+    content: "";
+    transition: 0.25s;
+  }
+  body #chrome-bar #main-bar #address-bar .address-bar-button svg.hide,
+  body #chrome-bar #main-bar #address-bar .address-bar-button img.hide,
+  body #chrome-bar #main-bar #address-bar .address-bar-button .special.hide {
+    display: none;
+  }
+  body
+    #chrome-bar
+    #main-bar
+    #address-bar
+    .address-bar-button:not([disabled]):hover {
+    background-color: #d6d8da;
+  }
+  body
+    #chrome-bar
+    #main-bar
+    #address-bar
+    .address-bar-button:not([disabled]):hover
+    .special:before {
+    opacity: 0;
+  }
+  body
+    #chrome-bar
+    #main-bar
+    #address-bar
+    .address-bar-button:not([disabled]):active {
+    transition: 0.05s;
+    background-color: #c9cbcd;
+  }
+  body #chrome-bar #main-bar #address-bar #address {
+    flex-grow: 1;
+    font-size: 14px;
+  }
+  body #chrome-bar #main-bar #address-bar #address .protocol {
+    color: #5f6368;
+  }
+  body #chrome-bar #main-bar #address-bar #address .domain {
+    color: #202124;
+  }
+  body #chrome-bar #main-bar #address-bar #address .extension {
+    color: #80868b;
+  }
+  body #chrome-bar #main-bar .seperator {
+    width: 1px;
+    height: 16px;
+    margin: 0 6px 0 8px;
+    background-color: #ced0d1;
+  }
+
+  webview {
+    width: 100%;
+    height: 100%;
+  }
+</style>

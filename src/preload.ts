@@ -1,14 +1,13 @@
-// All of the Node.js APIs are available in the preload process.
-// It has the same sandbox as a Chrome extension.
-window.addEventListener("DOMContentLoaded", () => {
-  const replaceText = (selector: string, text: string) => {
-    const element = document.getElementById(selector);
-    if (element) {
-      element.innerText = text;
-    }
-  };
+console.log("qwe");
 
-  for (const type of ["chrome", "node", "electron"]) {
-    replaceText(`${type}-version`, process.versions[type as keyof NodeJS.ProcessVersions]);
-  }
+import { ipcRenderer, contextBridge } from "electron";
+// Expose protected methods that allow the renderer process to use
+// the ipcRenderer without exposing the entire object
+contextBridge.exposeInMainWorld("api", {
+  send: (channel: string, data: any) => {
+    ipcRenderer.send(channel, data);
+  },
+  receive: (channel: string, func: (...T: any) => void) => {
+    ipcRenderer.on(channel, (event, ...args) => func(...args));
+  },
 });

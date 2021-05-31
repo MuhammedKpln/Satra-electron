@@ -1,8 +1,6 @@
 import { app, session, Notification, dialog } from "electron";
 import { autoUpdater } from "electron-updater";
 
-autoUpdater.autoDownload = false;
-
 const hardRestart = async () => {
   await session.defaultSession.clearAuthCache();
   await session.defaultSession.clearStorageData();
@@ -15,6 +13,8 @@ const hardRestart = async () => {
 };
 
 const update = async () => {
+  autoUpdater.autoDownload = false;
+
   await autoUpdater.checkForUpdatesAndNotify({
     title: "Uppdatering tillgänglig!",
     body: "Uppdatering tillgänglig för Sätra Trafikskola.",
@@ -70,6 +70,9 @@ export const menuTemplate = [
       {
         label: "Version",
         click: async () => await version(),
+      },
+      {
+        role: "toggleDevTools",
       },
     ],
   },
