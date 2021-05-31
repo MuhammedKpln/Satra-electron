@@ -38,6 +38,12 @@
     },
     "mac": {
       "icon": "assets/icon.png"
+    },
+    "nsis": {
+      "oneClick": true,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": false,
+      "perMachine": true
     }
   },
   "dependencies": {
