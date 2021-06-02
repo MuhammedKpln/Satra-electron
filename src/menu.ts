@@ -28,6 +28,10 @@ const update = async () => {
   });
 
   autoUpdater.on("update-available", () => {
+    new Notification({
+      title: "Uppdateringen laddas...",
+      body: "Vänligen vänta..",
+    }).show();
     autoUpdater.checkForUpdates().then(() => {
       autoUpdater
         .downloadUpdate()
