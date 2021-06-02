@@ -1,8 +1,11 @@
-import { app, BrowserWindow, screen, Menu, ipcMain } from "electron";
+import { app, BrowserWindow, screen, Menu } from "electron";
 import { menuTemplate } from "./menu";
-try {
-  require("electron-reloader")(module);
-} catch (_) {}
+if (process.env.DEVELOPMENT) {
+  try {
+    require("electron-reloader")(module);
+  } catch (_) {}
+}
+
 function createWindow() {
   // Create the browser window.
   const { width, height } = screen.getPrimaryDisplay().workAreaSize;
