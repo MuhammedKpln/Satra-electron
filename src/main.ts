@@ -1,4 +1,4 @@
-import { app, BrowserWindow, screen, Menu } from "electron";
+import { app, BrowserWindow, screen, Menu, session } from "electron";
 import { menuTemplate } from "./menu";
 if (process.env.DEVELOPMENT) {
   try {
@@ -55,6 +55,21 @@ app.on("ready", () => {
 
   createWindow();
 
+  const urls = ["http://159.89.27.224/*"];
+  if (process.env.DEVELOPMENT) {
+    urls.push("http://localhost:3000/*");
+  }
+  const filter = {
+    urls: urls,
+  };
+
+  session.defaultSession.webRequest.onBeforeSendHeaders(
+    filter,
+    (details, callback) => {
+      details.requestHeaders["satra-client"] = "14oqwkelo53";
+      callback({ cancel: false, requestHeaders: details.requestHeaders });
+    },
+  );
   app.on("activate", function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.

@@ -78,6 +78,9 @@ export const menuTemplate = [
       {
         role: "toggleDevTools",
       },
+      {
+        role: "quit",
+      },
     ],
   },
 ];
