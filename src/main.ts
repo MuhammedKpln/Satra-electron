@@ -1,9 +1,11 @@
 import { app, BrowserWindow, screen, Menu, session } from "electron";
 import { menuTemplate } from "./menu";
-if (process.env.DEVELOPMENT) {
+if (process.env.NODE_ENV === "development") {
   try {
     require("electron-reloader")(module);
-  } catch (_) {}
+  } catch (_) {
+    console.error(_);
+  }
 }
 
 function createWindow() {

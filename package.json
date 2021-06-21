@@ -1,6 +1,6 @@
 {
   "name": "satra-trafikskola",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "Sätra Trafikskola prov client",
   "main": "./build/main.js",
   "scripts": {
@@ -9,7 +9,7 @@
     "build:mac": "electron-builder --mac --publish never",
     "build:win": "electron-builder --win --publish never",
     "lint": "eslint -c .eslintrc --ext .ts ./src",
-    "start": "cross-env DEVELOPMENT=true tsc && electron ./build/main.js",
+    "start": "tsc && cross-env NODE_ENV=development  electron ./build/main.js",
     "pack": "electron-builder --dir",
     "prod": "electron-builder --win --publish always",
     "prestart": "copyfiles src/*.html build/",
@@ -48,6 +48,7 @@
     }
   },
   "dependencies": {
-    "electron-updater": "^4.3.9"
+    "electron-updater": "^4.3.9",
+    "electron-progressbar": "^2.0.1"
   }
 }

@@ -1,5 +1,6 @@
 import { app, session, Notification, dialog } from "electron";
 import { autoUpdater } from "electron-updater";
+const ProgressBar = require("electron-progressbar");
 
 autoUpdater.autoDownload = false;
 
@@ -15,10 +16,17 @@ const hardRestart = async () => {
 };
 
 const update = async () => {
-  await autoUpdater.checkForUpdatesAndNotify({
-    title: "Uppdatering tillgänglig!",
-    body: "Uppdatering tillgänglig för Sätra Trafikskola.",
+  if (process.env.NODE_ENV === "development") {
+    const path = require("path");
+    autoUpdater.updateConfigPath = path.join(__dirname, "dev-app-update.yml");
+  }
+  const progressBar = new ProgressBar({
+    indeterminate: false,
+    text: "Uppdateringen laddas...",
+    detail: "Vänligen vänta..",
   });
+
+  autoUpdater.checkForUpdates().then((update) => {});
 
   autoUpdater.on("update-not-available", () => {
     new Notification({
@@ -27,31 +35,40 @@ const update = async () => {
     }).show();
   });
 
+  autoUpdater.on("download-progress", (progress) => {
+    progressBar.value = progress.percent;
+    progressBar.detail = "%" + Math.round(progress.percent);
+    progressBar.text = "Uppdateringen laddas...";
+  });
+
+  autoUpdater.on("update-downloaded", (progress) => {
+    progressBar.close();
+  });
+
   autoUpdater.on("update-available", () => {
     new Notification({
       title: "Uppdateringen laddas...",
       body: "Vänligen vänta..",
     }).show();
-    autoUpdater.checkForUpdates().then(() => {
-      autoUpdater
-        .downloadUpdate()
-        .then(() => {
-          new Notification({
-            title: "Uppdateringen laddats, installeras..",
-            body: "Uppdateringen laddats, installeras..",
-          }).show();
 
-          setTimeout(async () => {
-            await autoUpdater.quitAndInstall(false, true);
-          }, 3000);
-        })
-        .catch((err) => {
-          new Notification({
-            title: "Uppdateringen laddats, installeras..",
-            body: err.toString(),
-          }).show();
-        });
-    });
+    autoUpdater
+      .downloadUpdate()
+      .then(() => {
+        new Notification({
+          title: "Uppdateringen laddats, installeras..",
+          body: "Uppdateringen laddats, installeras..",
+        }).show();
+
+        setTimeout(async () => {
+          await autoUpdater.quitAndInstall(false, true);
+        }, 3000);
+      })
+      .catch((err) => {
+        new Notification({
+          title: "Uppdateringen laddats, installeras..",
+          body: err.toString(),
+        }).show();
+      });
   });
 };
 
