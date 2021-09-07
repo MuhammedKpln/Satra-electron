@@ -19,7 +19,7 @@
   "author": "Muhammed Kaplan",
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.25.0",
-    "@typescript-eslint/parser": "^4.26.0",
+    "@typescript-eslint/parser": "^4.31.0",
     "copyfiles": "^2.4.1",
     "cross-env": "^7.0.3",
     "electron": "^13.1.9",
