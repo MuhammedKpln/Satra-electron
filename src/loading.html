@@ -3,15 +3,27 @@
   href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap"
   rel="stylesheet"
 />
-<img
-  src="https://satratrafikskola.se/____impro/1/onewebmedia/IMG-20191220-WA0006.jpg?etag=%223d55-5e092a85%22&sourceContentType=image%2Fjpeg&quality=85"
-  alt=""
-  style="width: 100%"
-/>
+<div class="container">
+  <img
+    src="https://satratrafikskola.se/____impro/1/onewebmedia/IMG-20191220-WA0006.jpg?etag=%223d55-5e092a85%22&sourceContentType=image%2Fjpeg&quality=85"
+    alt=""
+    style="width: 100%"
+  />
 
-<p>Laddas...</p>
+  <p>Laddas...</p>
+</div>
 
 <style>
+  .container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  img {
+    height: 100%;
+  }
   p {
     color: white;
     text-align: center;

@@ -1,6 +1,6 @@
-import { app, session, Notification, dialog } from "electron";
+import { Notification, app, dialog, session } from "electron";
+import ProgressBar from "electron-progressbar";
 import { autoUpdater } from "electron-updater";
-const ProgressBar = require("electron-progressbar");
 
 autoUpdater.autoDownload = false;
 
@@ -15,7 +15,7 @@ const hardRestart = async () => {
   console.log("Hard restarted");
 };
 
-const update = async () => {
+export const update = async () => {
   if (process.env.NODE_ENV === "development") {
     const path = require("path");
     autoUpdater.updateConfigPath = path.join(__dirname, "dev-app-update.yml");
@@ -33,6 +33,8 @@ const update = async () => {
       title: "Finns inga uppdatering",
       body: "Finns inga uppdatering som är tillgängligt.",
     }).show();
+
+    progressBar.close();
   });
 
   autoUpdater.on("download-progress", (progress) => {
@@ -60,7 +62,7 @@ const update = async () => {
         }).show();
 
         setTimeout(async () => {
-          await autoUpdater.quitAndInstall(false, true);
+          await autoUpdater.quitAndInstall(true, true);
         }, 3000);
       })
       .catch((err) => {

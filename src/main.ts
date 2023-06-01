@@ -1,5 +1,6 @@
-import { app, BrowserWindow, screen, Menu, session } from "electron";
-import { menuTemplate } from "./menu";
+import { BrowserWindow, Menu, app, screen, session } from "electron";
+import { menuTemplate, update } from "./menu";
+
 if (process.env.NODE_ENV === "development") {
   try {
     require("electron-reloader")(module);
@@ -15,25 +16,27 @@ function createWindow() {
   const mainWindow = new BrowserWindow({
     width,
     height,
-    show: false, // don't show the main window
+    show: false,
     autoHideMenuBar: true,
     webPreferences: {
       webviewTag: true,
       preload: __dirname + "/preload.js",
     },
-    titleBarStyle: "hidden",
   });
 
   const splash = new BrowserWindow({
-    width: 810,
-    height: 610,
     transparent: true,
     frame: false,
     alwaysOnTop: true,
+    titleBarStyle: "hidden",
   });
 
   splash.loadURL(`file://${__dirname}/src/loading.html`);
   mainWindow.loadURL(`file://${__dirname}/src/index.html`);
+
+  mainWindow.once("show", () => {
+    update();
+  });
 
   mainWindow.once("ready-to-show", () => {
     mainWindow.webContents.executeJavaScript(`window.localStorage.clear()`);
