@@ -57,7 +57,7 @@ app.on("ready", () => {
 
   createWindow();
 
-  const urls = ["http://159.89.27.224/*"];
+  const urls = ["http://64.226.101.127/*"];
   if (process.env.DEVELOPMENT) {
     urls.push("http://localhost:3000/*");
   }
